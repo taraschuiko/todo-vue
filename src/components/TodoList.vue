@@ -63,20 +63,7 @@ export default {
       newTodoId: 3,
       beforeEditCache: "",
       filter: "all",
-      todos: [
-        {
-          id: 1,
-          title: "Some task",
-          completed: false,
-          editing: false
-        },
-        {
-          id: 2,
-          title: "Another task",
-          completed: false,
-          editing: false
-        }
-      ]
+      todos: []
     };
   },
   computed: {
