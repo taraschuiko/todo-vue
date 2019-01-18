@@ -17,9 +17,9 @@
           <input type="checkbox" v-model="todo.completed">
           <div
             v-if="!todo.editing"
-            @dblclick="editTodo(todo)"
             class="todo-item-title"
             :class="{completed : todo.completed}"
+            @dblclick="editTodo(todo)"
           >{{todo.title}}</div>
           <input
             v-else
@@ -103,6 +103,7 @@ export default {
       this.todos.push({
         id: this.newTodoId,
         title: this.newTodoTitle,
+        editing: false,
         completed: false
       });
 
