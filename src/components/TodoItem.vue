@@ -24,6 +24,8 @@
 </template>
 
 <script>
+/* global eventBus */
+
 export default {
   name: "TodoItem",
   props: {
@@ -67,7 +69,7 @@ export default {
   },
   methods: {
     removeTodo(index) {
-      this.$emit("removedTodo", index);
+      eventBus.$emit("removedTodo", index);
     },
     editTodo() {
       this.beforeEditCache = this.title;
@@ -78,7 +80,7 @@ export default {
         this.title = this.beforeEditCache;
       }
       this.editing = false;
-      this.$emit("editedTodo", {
+      eventBus.$emit("editedTodo", {
         index: this.index,
         todo: {
           id: this.id,
