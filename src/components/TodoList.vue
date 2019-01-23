@@ -12,28 +12,15 @@
       enter-active-class="animated fadeInUp"
       leave-active-class="animated fadeOutDown"
     >
-      <div v-for="(todo, index) in todosFiltered" :key="todo.id" class="todo-item">
-        <div class="todo-item-left">
-          <input type="checkbox" v-model="todo.completed">
-          <div
-            v-if="!todo.editing"
-            class="todo-item-title"
-            :class="{completed : todo.completed}"
-            @dblclick="editTodo(todo)"
-          >{{todo.title}}</div>
-          <input
-            v-else
-            class="todo-item-edit"
-            type="text"
-            v-model="todo.title"
-            @blur="doneEditTodo(todo)"
-            @keyup.enter="doneEditTodo(todo)"
-            @keyup.escape="cancelEditTodo(todo)"
-            v-focus
-          >
-        </div>
-        <div class="todo-item-remove" @click="removeTodo(index)">&times;</div>
-      </div>
+      <TodoItem
+        v-for="(todo, index) in todosFiltered"
+        :key="todo.id"
+        :todo="todo"
+        :index="index"
+        :checkAll="!anyRemaining"
+        @removedTodo="removeTodo"
+        @editedTodo="editedTodo"
+      ></TodoItem>
     </transition-group>
     <div class="todo-manage">
       <label>
@@ -55,8 +42,13 @@
 </template>
 
 <script>
+import TodoItem from "./TodoItem";
+
 export default {
   name: "TodoList",
+  components: {
+    TodoItem
+  },
   data() {
     return {
       newTodoTitle: "",
@@ -87,13 +79,6 @@ export default {
       return this.todos.filter(todo => todo.completed).length > 0;
     }
   },
-  directives: {
-    focus: {
-      inserted: function(el) {
-        el.focus();
-      }
-    }
-  },
   methods: {
     addTodo() {
       if (this.newTodoTitle.trim().length == 0) {
@@ -110,20 +95,6 @@ export default {
       this.newTodoTitle = "";
       this.newTodoId++;
     },
-    editTodo(todo) {
-      this.beforeEditCache = todo.title;
-      todo.editing = true;
-    },
-    doneEditTodo(todo) {
-      if (todo.title.trim().length == 0) {
-        todo.title = this.beforeEditCache;
-      }
-      todo.editing = false;
-    },
-    cancelEditTodo(todo) {
-      todo.title = this.beforeEditCache;
-      todo.editing = false;
-    },
     removeTodo(index) {
       this.todos.splice(index, 1);
     },
@@ -132,6 +103,11 @@ export default {
     },
     removeCompletedTodos() {
       this.todos = this.todos.filter(todo => !todo.completed);
+    },
+    editedTodo(data) {
+      // this.todos[data.index] = data.todo;
+      // or
+      this.todos.splice(data.index, 1, data.todo);
     }
   }
 };
