@@ -7,19 +7,16 @@
 </template>
 
 <script>
-/* global eventBus */
-
 export default {
   name: "TodoRemoveCompleted",
-  props: {
-    showRemoveCompletedButton: {
-      type: Boolean,
-      required: true
+  computed: {
+    showRemoveCompletedButton() {
+      return this.$store.getters.showRemoveCompletedButton;
     }
   },
   methods: {
     removeCompletedTodos() {
-      eventBus.$emit("removedCompletedTodos");
+      this.$store.dispatch("removeCompletedTodos");
     }
   }
 };

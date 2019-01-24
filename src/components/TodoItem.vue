@@ -19,13 +19,11 @@
         v-focus
       >
     </div>
-    <div class="todo-item-remove" @click="removeTodo(index)">&times;</div>
+    <div class="todo-item-remove" @click="removeTodo(id)">&times;</div>
   </div>
 </template>
 
 <script>
-/* global eventBus */
-
 export default {
   name: "TodoItem",
   props: {
@@ -68,8 +66,8 @@ export default {
     };
   },
   methods: {
-    removeTodo(index) {
-      eventBus.$emit("removedTodo", index);
+    removeTodo(id) {
+      this.$store.dispatch("removeTodo", id);
     },
     editTodo() {
       this.beforeEditCache = this.title;
@@ -80,14 +78,12 @@ export default {
         this.title = this.beforeEditCache;
       }
       this.editing = false;
-      eventBus.$emit("editedTodo", {
-        index: this.index,
-        todo: {
-          id: this.id,
-          title: this.title,
-          editing: this.editing,
-          completed: this.completed
-        }
+
+      this.$store.dispatch("updateTodo", {
+        id: this.id,
+        title: this.title,
+        editing: this.editing,
+        completed: this.completed
       });
     },
     cancelEditTodo() {
