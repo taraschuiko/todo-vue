@@ -45,6 +45,9 @@ export default {
     TodoItemsLeft,
     TodoFilter
   },
+  mounted() {
+    this.$store.dispatch("loadTodos");
+  },
   data() {
     return {
       newTodoTitle: "",
@@ -66,14 +69,14 @@ export default {
       }
 
       this.$store.dispatch("addTodo", {
-        id: this.newTodoId,
-        title: this.newTodoTitle,
-        editing: false,
-        completed: false
+        // id: this.newTodoId,
+        title: this.newTodoTitle
+        // editing: false,
+        // completed: false
       });
 
       this.newTodoTitle = "";
-      this.newTodoId++;
+      // this.newTodoId++;
     }
   }
 };
