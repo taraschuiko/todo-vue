@@ -12,6 +12,9 @@ export default {
   computed: {
     showRemoveCompletedButton() {
       return this.$store.getters.showRemoveCompletedButton;
+    },
+    getCompletedTodosIds() {
+      return this.$store.getters.getCompletedTodosIds;
     }
   },
   methods: {

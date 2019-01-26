@@ -30,6 +30,13 @@ export default new Vuex.Store({
     },
     showRemoveCompletedButton(state) {
       return state.todos.filter(todo => todo.completed).length > 0;
+    },
+    getCompletedTodosIds(state) {
+      return state.todos.map(todo => {
+        if (todo.completed) {
+          return todo.id
+        }
+      });
     }
   },
   mutations: {
@@ -113,18 +120,23 @@ export default new Vuex.Store({
     },
     removeTodo(context, id) {
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-        method: "DELETE"
-      }).then(() => context.dispatch("loadTodos"))
+          method: "DELETE"
+        }).then(() => context.dispatch("loadTodos"))
+        .catch(e => alert(e));
     },
     removeCompletedTodos(context) {
-      context.commit("removeCompletedTodos");
-      // const ids = this.$state.todos.map(todo => console.log(todo.id));
+      let ids = this.getters.getCompletedTodosIds;
+      ids.map(id => context.dispatch("removeTodo", id));
+
     },
     changeFilter(context, filter) {
       context.commit("changeFilter", filter);
     },
     checkAll(context, checked) {
-      context.commit("checkAll", checked);
+      this.state.todos.map(todo => {
+        todo.completed = checked;
+        context.dispatch("updateTodo", todo);
+      })
     }
   }
 });
