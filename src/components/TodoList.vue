@@ -157,6 +157,7 @@ export default {
 .todo-remove-completed {
   cursor: pointer;
   text-align: center;
+  margin: 0 20px;
 }
 
 .todo-filter {
