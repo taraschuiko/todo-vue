@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import TodoItem from "./TodoItem";
-import TodoCheckAll from "./TodoCheckAll";
-import TodoRemoveCompleted from "./TodoRemoveCompleted";
-import TodoItemsLeft from "./TodoItemsLeft";
-import TodoFilter from "./TodoFilter";
+import TodoItem from "./../components/TodoItem";
+import TodoCheckAll from "./../components/TodoCheckAll";
+import TodoRemoveCompleted from "./../components/TodoRemoveCompleted";
+import TodoItemsLeft from "./../components/TodoItemsLeft";
+import TodoFilter from "./../components/TodoFilter";
 
 export default {
   name: "TodoList",

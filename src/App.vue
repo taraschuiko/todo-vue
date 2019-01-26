@@ -1,23 +1,17 @@
 <template>
-  <div id="app" class="container">
-    <img alt="Vue logo" src="./assets/logo.png" class="logo">
-    <HelloWorld msg="Todo Vue.js App" class="title"/>
-    <TodoList/>
+  <div id="app">
+    <div id="nav">
+      <router-link to="/">Login</router-link>
+      <br>
+      <router-link to="/todos">Todos</router-link>
+    </div>
+    <div class="container">
+      <img src="./assets/logo.png" alt="Logo" class="logo">
+      <h1 class="title">Todo List</h1>
+      <router-view/>
+    </div>
   </div>
 </template>
-
-<script>
-import HelloWorld from "./components/HelloWorld.vue";
-import TodoList from "./components/TodoList.vue";
-
-export default {
-  name: "app",
-  components: {
-    HelloWorld,
-    TodoList
-  }
-};
-</script>
 
 <style lang="scss">
 * {
