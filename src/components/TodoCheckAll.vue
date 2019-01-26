@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="todo-check-all">
     <label>
       <input type="checkbox" :checked="!anyRemaining" @change="checkAll"> Check all
     </label>

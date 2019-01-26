@@ -1,5 +1,5 @@
 <template>
-  <div>{{remaining}} items left</div>
+  <div class="todo-items-left">{{remaining}} items left</div>
 </template>
 
 <script>

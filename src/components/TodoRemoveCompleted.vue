@@ -1,6 +1,6 @@
 <template>
   <div
-    class="todo-clear-completed"
+    class="todo-remove-completed"
     v-if="showRemoveCompletedButton"
     @click="removeCompletedTodos"
   >Remove completed</div>

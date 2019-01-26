@@ -147,10 +147,16 @@ export default {
   padding: 10px 19px;
   margin-top: 10px;
   border-top: 1px solid rgb(235, 235, 235);
+}
 
-  .todo-clear-completed {
-    cursor: pointer;
-  }
+.todo-check-all label {
+  display: flex;
+  align-items: center;
+}
+
+.todo-remove-completed {
+  cursor: pointer;
+  text-align: center;
 }
 
 .todo-filter {
@@ -168,6 +174,11 @@ export default {
 
   .active {
     border-color: rgb(172, 172, 172);
+    outline: 0;
   }
+}
+
+.todo-items-left {
+  text-align: right;
 }
 </style>
