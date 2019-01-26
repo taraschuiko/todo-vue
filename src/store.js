@@ -8,6 +8,7 @@ const BASE_URL = "https://salty-oasis-70023.herokuapp.com/todos";
 
 export default new Vuex.Store({
   state: {
+    username: "",
     filter: "all",
     todos: []
   },
@@ -72,6 +73,9 @@ export default new Vuex.Store({
     },
     checkAll(state, checked) {
       state.todos.map(todo => (todo.completed = checked));
+    },
+    login(state, username) {
+      state.username = username;
     }
   },
   actions: {
@@ -137,6 +141,11 @@ export default new Vuex.Store({
         todo.completed = checked;
         context.dispatch("updateTodo", todo);
       })
+    },
+    login(context, data) {
+      // fetch()
+      // .then()
+      context.commit("login", data.username);
     }
   }
 });
