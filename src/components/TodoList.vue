@@ -69,14 +69,11 @@ export default {
       }
 
       this.$store.dispatch("addTodo", {
-        // id: this.newTodoId,
-        title: this.newTodoTitle
-        // editing: false,
-        // completed: false
+        title: this.newTodoTitle,
+        completed: false
       });
 
       this.newTodoTitle = "";
-      // this.newTodoId++;
     }
   }
 };
