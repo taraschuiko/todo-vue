@@ -4,10 +4,11 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
-const BASE_URL = "https://salty-oasis-70023.herokuapp.com/todos";
+const BASE_URL = "https://salty-oasis-70023.herokuapp.com/";
 
 export default new Vuex.Store({
   state: {
+    isLoggedIn: false,
     username: "",
     filter: "all",
     todos: []
@@ -41,6 +42,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setIsLoggedIn(state, isLoggedIn) {
+      state.isLoggedIn = isLoggedIn;
+    },
     loadTodos(state, todos) {
       state.todos = todos;
     },
@@ -74,16 +78,75 @@ export default new Vuex.Store({
     checkAll(state, checked) {
       state.todos.map(todo => (todo.completed = checked));
     },
-    login(state, username) {
+    setUsername(state, username) {
       state.username = username;
     }
   },
   actions: {
+    checkLogin(context) {
+      fetch(PROXY_URL + BASE_URL + "checkLogin", {
+          method: "POST"
+        })
+        .then(r => r.json())
+        .then(d => {
+          console.log(d);
+          return d;
+        })
+        .then(d => {
+          context.commit("setIsLoggedIn", d.auth)
+        })
+    },
+    login(context, data) {
+      fetch(PROXY_URL + BASE_URL + "login", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(r => console.log(r))
+        // .then(r => {
+        //   context.commit("setIsLoggedIn", true);
+        //   context.commit("setUsername", data.username);
+        // })
+        .then(() => context.dispatch("checkLogin"))
+      // .then(() => {
+      //   if (this.state.isLoggedIn) {
+      //     context.commit("setUsername", data.username)
+      //   }
+      // })
+    },
+    logout(context, data) {
+      fetch(PROXY_URL + BASE_URL + "logout", {
+          method: "POST"
+        })
+        .then(r => console.log(r))
+    },
+    register(context, data) {
+      fetch(PROXY_URL + BASE_URL + "register", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(r => {
+          if (r.status == 401) {
+            alert("User already exist")
+          } else {
+            context.dispatch("login", data)
+          }
+        })
+        .catch(e => alert(e))
+    },
     loadTodos(context) {
-      fetch(PROXY_URL + BASE_URL, {
+      fetch(PROXY_URL + BASE_URL + "todos/" + this.state.username, {
           method: "GET"
         })
         .then(r => r.json())
+        .then(d => console.log(d))
         .then(d => {
           d.map(item => {
             item.id = item._id;
@@ -95,7 +158,7 @@ export default new Vuex.Store({
         .catch(e => alert(e));
     },
     addTodo(context, todo) {
-      fetch(PROXY_URL + BASE_URL, {
+      fetch(PROXY_URL + BASE_URL + "todos/" + this.state.username, {
           method: "POST",
           body: JSON.stringify(todo),
           headers: {
@@ -141,11 +204,6 @@ export default new Vuex.Store({
         todo.completed = checked;
         context.dispatch("updateTodo", todo);
       })
-    },
-    login(context, data) {
-      // fetch()
-      // .then()
-      context.commit("login", data.username);
     }
   }
 });

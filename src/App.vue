@@ -1,17 +1,42 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <!-- <div id="nav">
       <router-link to="/">Auth</router-link>
       <br>
       <router-link to="/todos">Todos</router-link>
-    </div>
+    </div>-->
+    <button @click="logout">Log out</button>
     <div class="container">
       <img src="./assets/logo.png" alt="Logo" class="logo">
       <h1 class="title">Todo List</h1>
-      <router-view/>
+      <!-- <router-view/> -->
+      <Auth v-if="!this.$store.state.isLoggedIn"/>
+      <TodoList v-if="this.$store.state.isLoggedIn"/>
     </div>
   </div>
 </template>
+
+<script>
+import Auth from "./views/Auth.vue";
+import TodoList from "./views/TodoList.vue";
+
+export default {
+  name: "App",
+  components: {
+    Auth,
+    TodoList
+  },
+  beforeMount() {
+    this.$store.dispatch("checkLogin");
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("logout");
+    }
+  }
+};
+</script>
+
 
 <style lang="scss">
 * {

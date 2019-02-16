@@ -37,6 +37,8 @@ export default {
           password: this.password
         });
       }
+      this.username = "";
+      this.password = "";
     },
     register(e) {
       e.preventDefault();
@@ -47,6 +49,8 @@ export default {
           password: this.password
         });
       }
+      this.username = "";
+      this.password = "";
     },
     checkForm() {
       this.errors = [];
