@@ -36,7 +36,7 @@ export default new Vuex.Store({
     getCompletedTodosIds(state) {
       return state.todos.map(todo => {
         if (todo.completed) {
-          return todo.id
+          return todo.id;
         }
       });
     }
@@ -84,6 +84,8 @@ export default new Vuex.Store({
   },
   actions: {
     checkLogin(context) {
+      const token = document.cookie;
+      console.log("Cookie: " + token);
       fetch(PROXY_URL + BASE_URL + "checkLogin", {
           method: "POST"
         })
@@ -93,16 +95,16 @@ export default new Vuex.Store({
           return d;
         })
         .then(d => {
-          context.commit("setIsLoggedIn", d.auth)
-        })
+          context.commit("setIsLoggedIn", d.auth);
+        });
     },
     login(context, data) {
       fetch(PROXY_URL + BASE_URL + "login", {
           method: "POST",
           body: JSON.stringify(data),
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            Accept: "application/json",
+            "Content-Type": "application/json"
           }
         })
         .then(r => console.log(r))
@@ -110,7 +112,7 @@ export default new Vuex.Store({
         //   context.commit("setIsLoggedIn", true);
         //   context.commit("setUsername", data.username);
         // })
-        .then(() => context.dispatch("checkLogin"))
+        .then(() => context.dispatch("checkLogin"));
       // .then(() => {
       //   if (this.state.isLoggedIn) {
       //     context.commit("setUsername", data.username)
@@ -122,24 +124,25 @@ export default new Vuex.Store({
           method: "POST"
         })
         .then(r => console.log(r))
+        .then(() => context.dispatch("checkLogin"));
     },
     register(context, data) {
       fetch(PROXY_URL + BASE_URL + "register", {
           method: "POST",
           body: JSON.stringify(data),
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            Accept: "application/json",
+            "Content-Type": "application/json"
           }
         })
         .then(r => {
           if (r.status == 401) {
-            alert("User already exist")
+            alert("User already exist");
           } else {
-            context.dispatch("login", data)
+            context.dispatch("login", data);
           }
         })
-        .catch(e => alert(e))
+        .catch(e => alert(e));
     },
     loadTodos(context) {
       fetch(PROXY_URL + BASE_URL + "todos/" + this.state.username, {
@@ -151,10 +154,10 @@ export default new Vuex.Store({
           d.map(item => {
             item.id = item._id;
             delete item._id;
-          })
+          });
           return d;
         })
-        .then((d) => context.commit("loadTodos", d))
+        .then(d => context.commit("loadTodos", d))
         .catch(e => alert(e));
     },
     addTodo(context, todo) {
@@ -162,10 +165,11 @@ export default new Vuex.Store({
           method: "POST",
           body: JSON.stringify(todo),
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            Accept: "application/json",
+            "Content-Type": "application/json"
           }
-        }).then(() => context.dispatch("loadTodos"))
+        })
+        .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     updateTodo(context, todo) {
@@ -179,22 +183,23 @@ export default new Vuex.Store({
           method: "PATCH",
           body: JSON.stringify(data),
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            Accept: "application/json",
+            "Content-Type": "application/json"
           }
-        }).then(() => context.dispatch("loadTodos"))
+        })
+        .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     removeTodo(context, id) {
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
           method: "DELETE"
-        }).then(() => context.dispatch("loadTodos"))
+        })
+        .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     removeCompletedTodos(context) {
       let ids = this.getters.getCompletedTodosIds;
       ids.map(id => context.dispatch("removeTodo", id));
-
     },
     changeFilter(context, filter) {
       context.commit("changeFilter", filter);
@@ -203,7 +208,7 @@ export default new Vuex.Store({
       this.state.todos.map(todo => {
         todo.completed = checked;
         context.dispatch("updateTodo", todo);
-      })
+      });
     }
   }
 });
