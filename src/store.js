@@ -4,7 +4,7 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
-const BASE_URL = "https://salty-oasis-70023.herokuapp.com/todos";
+const BASE_URL = "https://server-for-todo-by-koa.herokuapp.com/todos";
 
 export default new Vuex.Store({
   state: {
@@ -34,7 +34,7 @@ export default new Vuex.Store({
     getCompletedTodosIds(state) {
       return state.todos.map(todo => {
         if (todo.completed) {
-          return todo.id
+          return todo.id;
         }
       });
     }
@@ -77,28 +77,34 @@ export default new Vuex.Store({
   actions: {
     loadTodos(context) {
       fetch(PROXY_URL + BASE_URL, {
-          method: "GET"
-        })
+        method: "GET",
+        headers: {}
+      })
         .then(r => r.json())
         .then(d => {
           d.map(item => {
             item.id = item._id;
             delete item._id;
-          })
+          });
           return d;
         })
-        .then((d) => context.commit("loadTodos", d))
-        .catch(e => alert(e));
+        .then(d => {
+          console.log(d);
+          return d;
+        })
+        .then(d => context.commit("loadTodos", d))
+        .catch(e => console.log(e));
     },
     addTodo(context, todo) {
       fetch(PROXY_URL + BASE_URL, {
-          method: "POST",
-          body: JSON.stringify(todo),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }).then(() => context.dispatch("loadTodos"))
+        method: "POST",
+        body: JSON.stringify(todo),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+        .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     updateTodo(context, todo) {
@@ -109,25 +115,26 @@ export default new Vuex.Store({
       delete data.id;
       delete data.editing;
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-          method: "PATCH",
-          body: JSON.stringify(data),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }).then(() => context.dispatch("loadTodos"))
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+        .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     removeTodo(context, id) {
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-          method: "DELETE"
-        }).then(() => context.dispatch("loadTodos"))
+        method: "DELETE"
+      })
+        .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     removeCompletedTodos(context) {
       let ids = this.getters.getCompletedTodosIds;
       ids.map(id => context.dispatch("removeTodo", id));
-
     },
     changeFilter(context, filter) {
       context.commit("changeFilter", filter);
@@ -136,7 +143,7 @@ export default new Vuex.Store({
       this.state.todos.map(todo => {
         todo.completed = checked;
         context.dispatch("updateTodo", todo);
-      })
+      });
     }
   }
 });
