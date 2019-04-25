@@ -4,10 +4,12 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
-const BASE_URL = "https://server-for-todo-by-koa.herokuapp.com/todos";
+const BASE_URL = "https://server-for-todo-by-koa.herokuapp.com";
 
 export default new Vuex.Store({
   state: {
+    userName: "",
+    isLoggedIn: false,
     filter: "all",
     todos: []
   },
@@ -72,14 +74,33 @@ export default new Vuex.Store({
     },
     checkAll(state, checked) {
       state.todos.map(todo => (todo.completed = checked));
+    },
+    // auth
+    setUserName(state, userName) {
+      state.userName = userName;
+    },
+    setIsLoggedIn(state, isLoggedIn) {
+      state.isLoggedIn = isLoggedIn;
+    },
+    login(state, data) {
+      state.userName = data.user;
+      state.isLoggedIn = true;
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userName", data.user);
+    },
+    logout(state) {
+      state.userName = "";
+      state.isLoggedIn = false;
+      localStorage.removeItem("token");
+      localStorage.removeItem("userName");
     }
   },
   actions: {
     loadTodos(context) {
-      fetch(PROXY_URL + BASE_URL, {
-        method: "GET",
-        headers: {}
-      })
+      fetch(PROXY_URL + BASE_URL + "/" + this.state.userName, {
+          method: "GET",
+          headers: {}
+        })
         .then(r => r.json())
         .then(d => {
           d.map(item => {
@@ -88,22 +109,17 @@ export default new Vuex.Store({
           });
           return d;
         })
-        .then(d => {
-          console.log(d);
-          return d;
-        })
         .then(d => context.commit("loadTodos", d))
-        .catch(e => console.log(e));
     },
     addTodo(context, todo) {
-      fetch(PROXY_URL + BASE_URL, {
-        method: "POST",
-        body: JSON.stringify(todo),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
+      fetch(PROXY_URL + BASE_URL + "/" + this.state.userName, {
+          method: "POST",
+          body: JSON.stringify(todo),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
@@ -115,20 +131,20 @@ export default new Vuex.Store({
       delete data.id;
       delete data.editing;
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
+          method: "PATCH",
+          body: JSON.stringify(data),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     removeTodo(context, id) {
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-        method: "DELETE"
-      })
+          method: "DELETE"
+        })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
@@ -144,6 +160,53 @@ export default new Vuex.Store({
         todo.completed = checked;
         context.dispatch("updateTodo", todo);
       });
+    },
+    // auth
+    register(context, data) {
+      fetch(`${PROXY_URL}${BASE_URL}/register`, {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        })
+        .then(r => r.json())
+        .then(data => context.commit("login", data));
+    },
+    login(context, data) {
+      fetch(`${PROXY_URL}${BASE_URL}/login`, {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        })
+        .then(r => r.json())
+        .then(data => {
+          context.commit("login", data);
+        });
+    },
+    checkLogin(context) {
+      fetch(`${PROXY_URL}${BASE_URL}/checkLogin`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("token")
+          }
+        })
+        .then(r => r.json())
+        .then(r => {
+          if (r.isLoggedIn) {
+            let data = {
+              token: localStorage.getItem("token"),
+              user: localStorage.getItem("userName")
+            }
+            context.commit("login", data);
+          }
+        });
     }
   }
 });
