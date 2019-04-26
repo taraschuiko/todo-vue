@@ -1,15 +1,22 @@
 <template>
   <div id="app" class="container">
-    <div v-if="this.$store.state.isLoggedIn">
-      <p>Hello, {{this.$store.state.userName}}</p>
-      <Logout></Logout>
+    <div v-if="this.$store.state.isLoggedIn" class="row top-bar">
+      <div class="col-12 col-sm-6">
+        <h2>Todo App</h2>
+      </div>
+      <div class="col-12 col-sm-6 top-bar__logout">
+        <span>Hello, {{this.$store.state.userName}}</span>
+        <Logout></Logout>
+      </div>
     </div>
-    <img alt="Vue logo" src="./assets/logo.png" class="logo">
-    <h1 class="title">Todo Vue.js App</h1>
-    <TodoList v-if="this.$store.state.isLoggedIn"/>
-    <div v-if="!this.$store.state.isLoggedIn">
-      <Login/>
-      <Register/>
+    <div class="row todo">
+      <div class="col-12">
+        <TodoList v-if="this.$store.state.isLoggedIn"/>
+        <div v-if="!this.$store.state.isLoggedIn">
+          <Login/>
+          <Register/>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -30,12 +37,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("checkLogin");
-    // if (localStorage.getItem("token")) {
-    //   this.$store.commit("login", {
-    //     user: localStorage.getItem("userName"),
-    //     token: localStorage.getItem("token")
-    //   });
-    // }
   }
 };
 </script>
@@ -45,27 +46,30 @@ export default {
   box-sizing: border-box;
 }
 
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  // text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  padding-top: 10px;
 }
 
-.logo {
-  width: 100px;
-  margin: 0 auto;
-  display: block;
+.top-bar {
+  &__logout {
+    display: flex;
+    align-items: center;
+
+    @media (min-width: 576px) {
+      justify-content: flex-end;
+    }
+
+    span {
+      margin-right: 10px;
+    }
+  }
 }
 
-.title {
-  text-align: center;
+.todo {
+  margin-top: 10px;
 }
 </style>

@@ -98,9 +98,9 @@ export default new Vuex.Store({
   actions: {
     loadTodos(context) {
       fetch(PROXY_URL + BASE_URL + "/" + this.state.userName, {
-          method: "GET",
-          headers: {}
-        })
+        method: "GET",
+        headers: {}
+      })
         .then(r => r.json())
         .then(d => {
           d.map(item => {
@@ -109,17 +109,17 @@ export default new Vuex.Store({
           });
           return d;
         })
-        .then(d => context.commit("loadTodos", d))
+        .then(d => context.commit("loadTodos", d));
     },
     addTodo(context, todo) {
       fetch(PROXY_URL + BASE_URL + "/" + this.state.userName, {
-          method: "POST",
-          body: JSON.stringify(todo),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        })
+        method: "POST",
+        body: JSON.stringify(todo),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
@@ -131,20 +131,20 @@ export default new Vuex.Store({
       delete data.id;
       delete data.editing;
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-          method: "PATCH",
-          body: JSON.stringify(data),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        })
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     removeTodo(context, id) {
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-          method: "DELETE"
-        })
+        method: "DELETE"
+      })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
@@ -164,25 +164,25 @@ export default new Vuex.Store({
     // auth
     register(context, data) {
       fetch(`${PROXY_URL}${BASE_URL}/register`, {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        })
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
         .then(r => r.json())
         .then(data => context.commit("login", data));
     },
     login(context, data) {
       fetch(`${PROXY_URL}${BASE_URL}/login`, {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        })
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
         .then(r => r.json())
         .then(data => {
           context.commit("login", data);
@@ -190,20 +190,20 @@ export default new Vuex.Store({
     },
     checkLogin(context) {
       fetch(`${PROXY_URL}${BASE_URL}/checkLogin`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: localStorage.getItem("token")
-          }
-        })
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token")
+        }
+      })
         .then(r => r.json())
         .then(r => {
           if (r.isLoggedIn) {
             let data = {
               token: localStorage.getItem("token"),
               user: localStorage.getItem("userName")
-            }
+            };
             context.commit("login", data);
           }
         });
