@@ -21,3 +21,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.todo-check-all {
+  input {
+    margin-right: 5px;
+  }
+}
+</style>

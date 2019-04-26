@@ -1,15 +1,37 @@
 <template>
-  <div>
-    <h2>Register</h2>
-    <div>
+  <div class="Register">
+    <h4>Register</h4>
+    <form action="none">
       <p>Name:</p>
-      <input type="name" name="name" v-model="name" @keyup.enter="register">
+      <input
+        type="name"
+        name="register_name"
+        autocomplete="name"
+        v-model="name"
+        @keyup.enter="register"
+        required
+      >
       <p>Email:</p>
-      <input type="email" name="email" v-model="email" @keyup.enter="register">
+      <input
+        type="email"
+        name="register_email"
+        autocomplete="email"
+        v-model="email"
+        @keyup.enter="register"
+        required
+      >
       <p>Password:</p>
-      <input type="password" name="password" v-model="password" @keyup.enter="register">
+      <input
+        type="password"
+        name="register_password"
+        autocomplete="password"
+        v-model="password"
+        @keyup.enter="register"
+        required
+      >
+      <br>
       <button @click="register">Register</button>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -24,15 +46,13 @@ export default {
     };
   },
   methods: {
-    register() {
+    register(event) {
+      event.preventDefault();
       this.$store.dispatch("register", {
         displayName: this.name,
         email: this.email,
         password: this.password
       });
-      this.name = "";
-      this.email = "";
-      this.password = "";
     }
   }
 };

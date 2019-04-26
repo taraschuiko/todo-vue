@@ -1,13 +1,28 @@
 <template>
-  <div>
-    <h2>Login</h2>
-    <div>
+  <div class="Login">
+    <h4>Login</h4>
+    <form action="none">
       <p>Email:</p>
-      <input type="email" name="email" v-model="email" @keyup.enter="login">
+      <input
+        type="email"
+        name="login_email"
+        autocomplete="email"
+        v-model="email"
+        @keyup.enter="login"
+        required
+      >
       <p>Password:</p>
-      <input type="password" name="password" v-model="password" @keyup.enter="login">
+      <input
+        type="password"
+        name="login_password"
+        autocomplete="password"
+        v-model="password"
+        @keyup.enter="login"
+        required
+      >
+      <br>
       <button @click="login">Login</button>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -21,13 +36,12 @@ export default {
     };
   },
   methods: {
-    login() {
+    login(event) {
+      event.preventDefault();
       this.$store.dispatch("login", {
         email: this.email,
         password: this.password
       });
-      this.email = "";
-      this.password = "";
     }
   }
 };

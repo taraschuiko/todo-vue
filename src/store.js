@@ -11,7 +11,8 @@ export default new Vuex.Store({
     userName: "",
     isLoggedIn: false,
     filter: "all",
-    todos: []
+    todos: [],
+    authError: ""
   },
   getters: {
     remaining(state) {
@@ -93,14 +94,17 @@ export default new Vuex.Store({
       state.isLoggedIn = false;
       localStorage.removeItem("token");
       localStorage.removeItem("userName");
+    },
+    setAuthError(state, error) {
+      state.authError = error;
     }
   },
   actions: {
     loadTodos(context) {
       fetch(PROXY_URL + BASE_URL + "/" + this.state.userName, {
-        method: "GET",
-        headers: {}
-      })
+          method: "GET",
+          headers: {}
+        })
         .then(r => r.json())
         .then(d => {
           d.map(item => {
@@ -113,13 +117,13 @@ export default new Vuex.Store({
     },
     addTodo(context, todo) {
       fetch(PROXY_URL + BASE_URL + "/" + this.state.userName, {
-        method: "POST",
-        body: JSON.stringify(todo),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
+          method: "POST",
+          body: JSON.stringify(todo),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
@@ -131,20 +135,20 @@ export default new Vuex.Store({
       delete data.id;
       delete data.editing;
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
+          method: "PATCH",
+          body: JSON.stringify(data),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
     removeTodo(context, id) {
       fetch(`${PROXY_URL + BASE_URL}/${id}`, {
-        method: "DELETE"
-      })
+          method: "DELETE"
+        })
         .then(() => context.dispatch("loadTodos"))
         .catch(e => alert(e));
     },
@@ -164,39 +168,49 @@ export default new Vuex.Store({
     // auth
     register(context, data) {
       fetch(`${PROXY_URL}${BASE_URL}/register`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        })
         .then(r => r.json())
-        .then(data => context.commit("login", data));
+        .then(data => {
+          if (!data.message) {
+            context.commit("login", data);
+          } else {
+            context.commit("setAuthError", "Couldn't register, check the data")
+          }
+        })
     },
     login(context, data) {
       fetch(`${PROXY_URL}${BASE_URL}/login`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        })
         .then(r => r.json())
         .then(data => {
           context.commit("login", data);
-        });
+          context.commit("setAuthError", "")
+        })
+        .catch(() => {
+          context.commit("setAuthError", "Couldn't register, check the data")
+        })
     },
     checkLogin(context) {
       fetch(`${PROXY_URL}${BASE_URL}/checkLogin`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token")
-        }
-      })
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("token")
+          }
+        })
         .then(r => r.json())
         .then(r => {
           if (r.isLoggedIn) {
